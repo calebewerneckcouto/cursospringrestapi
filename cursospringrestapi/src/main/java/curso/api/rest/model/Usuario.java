@@ -26,7 +26,6 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -62,7 +61,7 @@ public class Usuario implements UserDetails {
 	private List<Role> roles = new ArrayList<Role>(); /* Os papeis ou acessos */
 
 	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(iso = ISO.DATE, pattern = "dd/MM/yyyy")
+	@DateTimeFormat(iso = ISO.DATE,pattern = "dd/MM/yyyy")
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dataNascimento;
 

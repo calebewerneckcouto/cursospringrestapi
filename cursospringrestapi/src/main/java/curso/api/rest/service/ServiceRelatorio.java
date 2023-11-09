@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -21,7 +22,7 @@ public class ServiceRelatorio {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	public byte[]gerarRelatorio (String nomeRelatorio, ServletContext servletContext) throws Exception{
+	public byte[]gerarRelatorio (String nomeRelatorio,Map<String, Object> params, ServletContext servletContext) throws Exception{
 		/*Obter conexao com banco de dados*/
 		
 		Connection connection = jdbcTemplate.getDataSource().getConnection();
@@ -35,7 +36,7 @@ public class ServiceRelatorio {
 		
 		/*Gerar o relatorio com os dados e conexão*/
 		
-		JasperPrint print = JasperFillManager.fillReport(caminhoJasper, new HashMap<>(), connection);
+		JasperPrint print = JasperFillManager.fillReport(caminhoJasper, params, connection);
 		
 		/*Exporta para byte o PDF para fazer download*/
 		
