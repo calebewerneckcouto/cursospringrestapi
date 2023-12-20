@@ -65,8 +65,8 @@ public class Usuario implements UserDetails {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dataNascimento;
 
-	@ManyToOne
-	private Profissao profissao;
+	
+	private String profissao;
 
 	private BigDecimal salario;
 
@@ -78,11 +78,13 @@ public class Usuario implements UserDetails {
 		return salario;
 	}
 
-	public Profissao getProfissao() {
+	
+
+	public String getProfissao() {
 		return profissao;
 	}
 
-	public void setProfissao(Profissao profissao) {
+	public void setProfissao(String profissao) {
 		this.profissao = profissao;
 	}
 
