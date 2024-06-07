@@ -1,6 +1,6 @@
 package curso.api.rest;
 
-public class ObjetoError {
+public class ObejtoMsgGeral {
 
 	private String error;
 	private String code;

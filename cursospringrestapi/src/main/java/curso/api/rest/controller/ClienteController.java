@@ -28,20 +28,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import curso.api.rest.model.Clientes;
 import curso.api.rest.model.UserChart;
 import curso.api.rest.model.UserReport;
 import curso.api.rest.model.Usuario;
+import curso.api.rest.repositoy.ClienteRepository;
 import curso.api.rest.repositoy.TelefoneRepository;
-import curso.api.rest.repositoy.UsuarioRepository;
 import curso.api.rest.service.ImplementacaoUserDetailsSercice;
 import curso.api.rest.service.ServiceRelatorio;
 
 @RestController /* Arquitetura REST */
-@RequestMapping(value = "/usuario")
-public class IndexController {
+@RequestMapping(value = "/cliente")
+public class ClienteController {
 
 	@Autowired /* de fosse CDI seria @Inject */
-	private UsuarioRepository usuarioRepository;
+	private ClienteRepository clienteRepository;
 
 	@Autowired
 	private TelefoneRepository telefoneRepository;
@@ -56,30 +57,30 @@ public class IndexController {
 	private ImplementacaoUserDetailsSercice implementacaoUserDetailsSercice;
 
 	/* Serviço RESTful */
-	@GetMapping(value = "/{id}/codigovenda/{venda}", produces = "application/json")
-	public ResponseEntity<Usuario> relatorio(@PathVariable(value = "id") Long id,
-			@PathVariable(value = "venda") Long venda) {
+	@GetMapping(value = "/{id}/codigoos/{os}", produces = "application/json")
+	public ResponseEntity<Clientes> relatorio(@PathVariable(value = "id") Long id,
+			@PathVariable(value = "os") Long os) {
 
-		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		Optional<Clientes> usuario = clienteRepository.findById(id);
 
 		/* o retorno seria um relatorio */
-		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+		return new ResponseEntity<Clientes>(usuario.get(), HttpStatus.OK);
 	}
 
 	/* Serviço RESTful */
 	@GetMapping(value = "/{id}", produces = "application/json")
 	@CachePut("cacheuser")
-	public ResponseEntity<Usuario> init(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<Clientes> init(@PathVariable(value = "id") Long id) {
 
-		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		Optional<Clientes> usuario = clienteRepository.findById(id);
 
-		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+		return new ResponseEntity<Clientes>(usuario.get(), HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{id}", produces = "application/text")
 	public String delete(@PathVariable("id") Long id) {
 
-		usuarioRepository.deleteById(id);
+		clienteRepository.deleteById(id);
 
 		return "ok";
 	}
@@ -87,7 +88,7 @@ public class IndexController {
 	@DeleteMapping(value = "/{id}/venda", produces = "application/text")
 	public String deletevenda(@PathVariable("id") Long id) {
 
-		usuarioRepository.deleteById(id);
+		clienteRepository.deleteById(id);
 
 		return "ok";
 	}
@@ -98,105 +99,97 @@ public class IndexController {
 	 */
 	@GetMapping(value = "/", produces = "application/json")
 	@CachePut("cacheusuarios")
-	public ResponseEntity<Page<Usuario>> usuario() throws InterruptedException {
+	public ResponseEntity<Page<Clientes>> usuario() throws InterruptedException {
 
 		PageRequest page = PageRequest.of(0, 5, Sort.by("nome"));
 
-		Page<Usuario> list = usuarioRepository.findAll(page);
+		Page<Clientes> list = clienteRepository.findAll(page);
 
-		return new ResponseEntity<Page<Usuario>>(list, HttpStatus.OK);
+		return new ResponseEntity<Page<Clientes>>(list, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/page/{pagina}", produces = "application/json")
 	@CachePut("cacheusuarios")
-	public ResponseEntity<Page<Usuario>> usuarioPagina(@PathVariable("pagina") int pagina) throws InterruptedException {
+	public ResponseEntity<Page<Clientes>> usuarioPagina(@PathVariable("pagina") int pagina) throws InterruptedException {
 
 		PageRequest page = PageRequest.of(pagina, 5, Sort.by("nome"));
 
-		Page<Usuario> list = usuarioRepository.findAll(page);
+		Page<Clientes> list = clienteRepository.findAll(page);
 
-		return new ResponseEntity<Page<Usuario>>(list, HttpStatus.OK);
+		return new ResponseEntity<Page<Clientes>>(list, HttpStatus.OK);
 	}
 
 	/* END-POINT consulta de usuário por nome */
 	@GetMapping(value = "/usuarioPorNome/{nome}", produces = "application/json")
 	@CachePut("cacheusuarios")
-	public ResponseEntity<Page<Usuario>> usuarioPorNome(@PathVariable("nome") String nome) throws InterruptedException {
+	public ResponseEntity<Page<Clientes>> usuarioPorNome(@PathVariable("nome") String nome) throws InterruptedException {
 
 		PageRequest pageRequest = null;
-		Page<Usuario> list = null;
+		Page<Clientes> list = null;
 
 		if (nome == null || (nome != null && nome.trim().isEmpty())
 				|| nome.equalsIgnoreCase("undefined")) {/* Não informou nome */
 
 			pageRequest = PageRequest.of(0, 5, Sort.by("nome"));
-			list = usuarioRepository.findAll(pageRequest);
+			list = clienteRepository.findAll(pageRequest);
 		} else {
 			pageRequest = PageRequest.of(0, 5, Sort.by("nome"));
-			list = usuarioRepository.findUserByNamePage(nome, pageRequest);
+			list = clienteRepository.findUserByNamePage(nome, pageRequest);
 		}
 
-		return new ResponseEntity<Page<Usuario>>(list, HttpStatus.OK);
+		return new ResponseEntity<Page<Clientes>>(list, HttpStatus.OK);
 	}
 
 	/* END-POINT consulta de usuário por nome */
 	@GetMapping(value = "/usuarioPorNome/{nome}/page/{page}", produces = "application/json")
 	@CachePut("cacheusuarios")
-	public ResponseEntity<Page<Usuario>> usuarioPorNomePage(@PathVariable("nome") String nome,
+	public ResponseEntity<Page<Clientes>> usuarioPorNomePage(@PathVariable("nome") String nome,
 			@PathVariable("page") int page) throws InterruptedException {
 
 		PageRequest pageRequest = null;
-		Page<Usuario> list = null;
+		Page<Clientes> list = null;
 
 		if (nome == null || (nome != null && nome.trim().isEmpty())
 				|| nome.equalsIgnoreCase("undefined")) {/* Não informou nome */
 
 			pageRequest = PageRequest.of(page, 5, Sort.by("nome"));
-			list = usuarioRepository.findAll(pageRequest);
+			list = clienteRepository.findAll(pageRequest);
 		} else {
 			pageRequest = PageRequest.of(page, 5, Sort.by("nome"));
-			list = usuarioRepository.findUserByNamePage(nome, pageRequest);
+			list = clienteRepository.findUserByNamePage(nome, pageRequest);
 		}
 
-		return new ResponseEntity<Page<Usuario>>(list, HttpStatus.OK);
+		return new ResponseEntity<Page<Clientes>>(list, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/", produces = "application/json")
-	public ResponseEntity<Usuario> cadastrar(@RequestBody @Valid Usuario usuario) {
+	public ResponseEntity<Clientes> cadastrar(@RequestBody @Valid Clientes cliente) {
 
-		for (int pos = 0; pos < usuario.getTelefones().size(); pos++) {
-			usuario.getTelefones().get(pos).setUsuario(usuario);
-		}
-
-		String senhacriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
-		usuario.setSenha(senhacriptografada);
-		Usuario usuarioSalvo = usuarioRepository.save(usuario);
+		
+	
+		
+		Clientes usuarioSalvo = clienteRepository.save(cliente);
 
 	
 
-		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
+		return new ResponseEntity<Clientes>(usuarioSalvo, HttpStatus.OK);
 
 	}
 
 	@PutMapping(value = "/", produces = "application/json")
-	public ResponseEntity<Usuario> atualizar(@RequestBody Usuario usuario) {
+	public ResponseEntity<Clientes> atualizar(@RequestBody Clientes cliente) {
 
 		/* outras rotinas antes de atualizar */
 
-		for (int pos = 0; pos < usuario.getTelefones().size(); pos++) {
-			usuario.getTelefones().get(pos).setUsuario(usuario);
-		}
+		
 
-		Usuario userTemporario = usuarioRepository.findById(usuario.getId()).get();
+		Clientes userTemporario = clienteRepository.findById(cliente.getId()).get();
 
-		if (!userTemporario.getSenha().equals(usuario.getSenha())) { /* Senhas diferentes */
-			String senhacriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
-			usuario.setSenha(senhacriptografada);
-		}
+		
 
-		Usuario usuarioSalvo = usuarioRepository.save(usuario);
+		Clientes usuarioSalvo = clienteRepository.save(cliente);
 
-		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
+		return new ResponseEntity<Clientes>(usuarioSalvo, HttpStatus.OK);
 
 	}
 

@@ -52,5 +52,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 		return retorno;
 
 	}
+	
+	@Query("select u from Usuario u where u.nome = ?1")
+	Usuario findeUserNome(String nome);
 
 }

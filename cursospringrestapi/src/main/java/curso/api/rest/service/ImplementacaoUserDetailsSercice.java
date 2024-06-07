@@ -38,18 +38,21 @@ public class ImplementacaoUserDetailsSercice implements UserDetailsService {
 	}
 
 	public void insereAcessoPadrao(Long id) {
-		  
-		  //Descobre qual a constraint de restricao
-		  String constraint = usuarioRepository.consultaConstraintRole();
-		  
-		  if (constraint != null) {
-			  //Remove a constraint
-			  jdbcTemplate.execute(" alter table usuarios_role  DROP CONSTRAINT " + constraint);
-		  }
-		  
-		  //Insere os acessos padrão
-		  usuarioRepository.insereAcessoRolePadrao(id);
-		  
+	    if (id == null) {
+	        throw new IllegalArgumentException("Usuário ID não pode ser nulo");
+	    }
+
+	    // Descobre qual a constraint de restrição
+	    String constraint = usuarioRepository.consultaConstraintRole();
+
+	    if (constraint != null) {
+	        // Remove a constraint
+	        jdbcTemplate.execute("ALTER TABLE usuarios_role DROP CONSTRAINT " + constraint);
+	    }
+
+	    // Insere os acessos padrão
+	    usuarioRepository.insereAcessoRolePadrao(id);
 	}
+
 
 }
